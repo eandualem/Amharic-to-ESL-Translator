@@ -8,8 +8,8 @@ import re
 import pickle
 import os
 import preprocess_util as putil
-CODES = {0: '<PAD>', 1: '<EOS>', 2: '<UNK>', 3: '<GO>' }
-
+INT_TO_CODES = {0: '<PAD>', 1: '<EOS>', 2: '<UNK>', 3: '<GO>' }
+CODES_TO_INT = {'<PAD>': 0, '<EOS>': 1, '<UNK>': 2, '<GO>': 3 }
 def clean_data(sent, save=False, savePath=os.path.join("./cleaned.txt")):
     clean_sen=re.sub(r'^https?:\/\/.*[\r\n]*', ' ', sent)
     clean_sen = re.sub('[\_\£\!\@\#\$\%\^\«\»\&\*\(\)\…\[\]\{\}\;\“\”\›\’\‘\"\'\:\,\.\‹\/\<\>\?\\\\|\`\´\~\-\=\+]', '', clean_sen)
@@ -66,6 +66,13 @@ def preprocess_and_save(source_file_path, target_file_path,
                         save_path):
     source_file, target_file = load_file(source_file_path), load_file(target_file_path)
     source_clean_text, target_clean_text = putil.clean_data(source_file), putil.clean_data(target_file)
+    
+    src_int_to_vocab.update(INT_TO_CODES)
+    tgt_int_to_vocab.update(INT_TO_CODES)
+
+    src_vocab_to_int.update(CODES_TO_INT)
+    tgt_vocab_to_int.update(CODES_TO_INT)
+
     
     #TODO LEMMATIZE
     
