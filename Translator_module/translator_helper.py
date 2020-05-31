@@ -67,11 +67,11 @@ def preprocess_and_save(source_file_path, target_file_path,
     source_file, target_file = load_file(source_file_path), load_file(target_file_path)
     source_clean_text, target_clean_text = putil.clean_data(source_file), putil.clean_data(target_file)
     
-    src_int_to_vocab.update(INT_TO_CODES)
-    tgt_int_to_vocab.update(INT_TO_CODES)
+    #src_int_to_vocab.update(INT_TO_CODES)
+    #tgt_int_to_vocab.update(INT_TO_CODES)
 
-    src_vocab_to_int.update(CODES_TO_INT)
-    tgt_vocab_to_int.update(CODES_TO_INT)
+    #src_vocab_to_int.update(CODES_TO_INT)
+    #tgt_vocab_to_int.update(CODES_TO_INT)
 
     
     #TODO LEMMATIZE
@@ -116,4 +116,3 @@ def load_preprocessed_data(save_file):
 
 def load_params(save_file):
     pass
-#done
