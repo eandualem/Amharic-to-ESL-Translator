@@ -1,26 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
 
 public class AnimationMapper : MonoBehaviour
 {
-    private FinalResult result;
     private AnimationBiulder biulder;
+    private Data data;
+    private List<UnitAnimation> units;
 
-    void Start()
+    public Result mapper(string text, string originalTetx)
     {
-        //result = GetComponent<FinalResult>();
-        //biulder = GetComponent<AnimationBiulder>();
+        units = new List<UnitAnimation>();
+        data = new Data();
         biulder = new AnimationBiulder();
-
-        Data.LoadChar();
-        Data.LoadWords();
-    }
-
-    public FinalResult mapper(string text, string originalTetx)
-    {
-/*      UnitAnimation[] units = new UnitAnimation[] { };
-*/      List<UnitAnimation> units = new List<UnitAnimation>();
 
         string[] stringArray = text.Split(' ');
 
@@ -28,27 +22,27 @@ public class AnimationMapper : MonoBehaviour
         {
             string[,,] foundValue = new string[ 2, 3, 3];
 
-            if (Data.words.TryGetValue(word, out foundValue))
+            if (data.words.TryGetValue(word, out foundValue))
             {
                 units.Add(mapper(foundValue));
             }
-
-            // finger spell
-            char[] ca = word.ToCharArray();
-            foreach (var c in ca)
+            else
             {
-                if (Data.characters.TryGetValue(c, out foundValue))
+                // finger spell
+                char[] ca = word.ToCharArray();
+                foreach (var c in ca)
                 {
-                    units.Add(mapper(foundValue));
-                }  
+                    if (data.characters.TryGetValue(c, out foundValue))
+                    {
+                        units.Add(mapper(foundValue));
+                    }
+                }
             }
         }
-
-        result = new FinalResult(originalTetx, text, units);
-
-        return result;
+        return new Result(originalTetx, text, units);
     }
 
+    // symbol = new string[,,] { { { "AAAAA", "A", "31" }, { "A", null, null }, { "AAAAA", "B", "20" } }, { { "CCCCC", "A", "09" }, { "A", null, null }, { "CCCCC", "A", "09" } } });
     public UnitAnimation mapper(string[,,] symbol)
     {
         // split the string
@@ -71,6 +65,7 @@ public class AnimationMapper : MonoBehaviour
         {
             char[] ca = temp[0].ToCharArray();
             string str = "";
+
             foreach (var c in ca)
             {
                 str += GetConf(c);
@@ -155,19 +150,25 @@ public class AnimationMapper : MonoBehaviour
     {
         switch (c)
         {
-            case 'A': return "XOYO";
-            case 'B': return "XOY1";
-            case 'C': return "X1YO";
+            case 'A': return "X0Y0";
+            case 'B': return "X0Y1";
+            case 'C': return "X1Y0";
             case 'D': return "X1Y1";
-            case 'E': return "X2YO";
+            case 'E': return "X2Y0";
             case 'F': return "X2Y1";
-            case 'G': return "X3YO";
+            case 'G': return "X3Y0";
             case 'H': return "X3Y1";
-            case 'I': return "X4YO";
+            case 'I': return "X4Y0";
             case 'J': return "X4Y1";
-            case 'K': return "X5YO";
+            case 'K': return "X5Y0";
             case 'L': return "X5Y1";
-            default: return "XOYO";
+            case 'M': return "X0Y2";
+            case 'N': return "X1Y2";
+            case 'O': return "X2Y2";
+            case 'P': return "X3Y2";
+            case 'Q': return "X4Y2";
+            case 'R': return "X5Y2";
+            default:  throw new Exception("Invalid Letter");
         }
     }
 
@@ -195,24 +196,26 @@ public class AnimationMapper : MonoBehaviour
             case "17": return new Vector3(-0.30f, 1.2f, 0.3f);
             case "18": return new Vector3(-0.30f, 1.4f, 0.3f);
             case "19": return new Vector3(-0.30f, 1.6f, 0.3f);
-            case "20": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "21": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "22": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "23": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "24": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "25": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "26": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "27": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "28": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "29": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "30": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "31": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "32": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "33": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "34": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "35": return new Vector3(0.02f, 1.4f, 0.43f);
-            case "36": return new Vector3(0.02f, 1.4f, 0.43f);
-            default:   return new Vector3(0.00f, 0.0f, 0.00f);
+            // On body
+            case "20": return new Vector3( 0.000f,  1.700f,  0.200f);
+            case "21": return new Vector3( 0.000f,  1.625f,  0.200f);
+            case "22": return new Vector3(-0.100f,  1.575f,  0.200f);
+            case "23": return new Vector3( 0.100f,  1.575f,  0.200f);
+            case "24": return new Vector3(-0.150f,  1.550f,  0.100f);
+            case "25": return new Vector3( 0.150f,  1.550f,  0.100f);
+            case "26": return new Vector3( 0.000f,  1.525f,  0.200f);
+            case "27": return new Vector3( 0.000f,  1.475f,  0.200f);
+            case "28": return new Vector3( 0.000f,  1.450f,  0.200f);
+            case "29": return new Vector3(-0.150f,  1.350f,  0.100f);
+            case "30": return new Vector3( 0.150f,  1.350f,  0.100f);
+            case "31": return new Vector3( 0.000f,  1.375f,  0.150f);
+            case "32": return new Vector3(-0.050f,  1.200f,  0.200f);
+            case "33": return new Vector3( 0.050f,  1.200f,  0.200f);
+            case "34": return new Vector3( 0.150f,  1.010f,  0.200f);
+            case "35": return new Vector3(-0.050f,  0.890f,  0.200f);
+            case "36": return new Vector3( 0.050f,  0.890f,  0.200f);
+
+            default:   throw new Exception("Invalid Number");
         }
     }
 

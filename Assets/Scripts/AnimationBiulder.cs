@@ -3,20 +3,20 @@ using UnityEngine;
 
 public class AnimationBiulder
 {
-    private Vector3 rightArmPosition            = new Vector3(0, 0, 0);
-    private Vector3 leftArmPosition             = new Vector3(0, 0, 0);
-    private string rightHandOrientation         = null;
-    private string leftHandOrientation          = null;
-    private string rightHandConfigration        = "F0X0Y0F1X0Y0F2X0Y0F3X0Y0F4X0Y0";
-    private string leftHandConfigration         = "F0X0Y0F1X0Y0F2X0Y0F3X0Y0F4X0Y0";
-    private string rightHandTransition          = null;
-    private string leftHandTransition           = null;
-    private Vector3 rightArmPositionFinal       = new Vector3(0, 0, 0);
-    private Vector3 leftArmPositionFinal        = new Vector3(0, 0, 0);
-    private string rightHandOrientationFinal    = null;
-    private string leftHandOrientationFinal     = null;
-    private string rightHandConfigrationFinal   = "F0X0Y0F1X0Y0F2X0Y0F3X0Y0F4X0Y0";
-    private string leftHandConfigrationFinal    = "F0X0Y0F1X0Y0F2X0Y0F3X0Y0F4X0Y0";
+    private Vector3 rightArmPosition;
+    private Vector3 leftArmPosition;
+    private string rightHandOrientation;
+    private string leftHandOrientation;
+    private string rightHandConfigration;
+    private string leftHandConfigration;
+    private string rightHandTransition;
+    private string leftHandTransition;
+    private Vector3 rightArmPositionFinal;
+    private Vector3 leftArmPositionFinal;
+    private string rightHandOrientationFinal;
+    private string leftHandOrientationFinal;
+    private string rightHandConfigrationFinal;
+    private string leftHandConfigrationFinal;
 
     public AnimationBiulder RightArmPosition(Vector3 rightArmPosition)
     {
