@@ -7,7 +7,6 @@ public class AudioRecorder : MonoBehaviour
     private bool micConnected = false;
     private int minFreq;
     private int maxFreq;
-    const int HEADER_SIZE = 44;
 
     AudioSource audioSource;
 
@@ -31,15 +30,17 @@ public class AudioRecorder : MonoBehaviour
 
     public bool Record(AudioSource audioSource)
     {
+
         this.audioSource = audioSource;
         if (micConnected)
         {
             if (!Microphone.IsRecording(Microphone.devices[0]))
             {
-               audioSource.clip = Microphone.Start(Microphone.devices[0], true, 20, maxFreq);
+                // Record for 20 seconds and continue recording if lengthSec is reached, and wrap around
+                audioSource.clip = Microphone.Start(Microphone.devices[0], false, 20, maxFreq);
                 return true;
             }
-            else //Recording is in progress  
+            else 
             {
                 Debug.Log("Already Recording!");
                 return false;
@@ -60,12 +61,11 @@ public class AudioRecorder : MonoBehaviour
             if (Microphone.IsRecording(Microphone.devices[0]))
             {
                 Microphone.End(null);
-                
+                //audioSource.Play();
                 return ConvertAudio(audioSource.clip);
             }
         }
         return null;
-
     }
 
     byte[] ConvertAudio(AudioClip clip)
@@ -86,6 +86,40 @@ public class AudioRecorder : MonoBehaviour
             byteArr = BitConverter.GetBytes(intData[i]);
             byteArr.CopyTo(bytesData, i * 2);
         }
-        return bytesData;
+        Debug.Log(bytesData);
+        return AddHeader(bytesData, clip);
+    }
+
+    static byte[] AddHeader(byte[] bytesData, AudioClip clip)
+    {
+        UInt16 one        = 1;
+        UInt16 two        = 2;
+        UInt16 bps        = 16;
+        var hz            = clip.frequency;
+        var channels      = clip.channels;
+        var samples       = clip.samples;
+        UInt16 blockAlign = (ushort)(channels * 2);
+        byte[] new_data;
+
+        using (MemoryStream ms = new MemoryStream())
+        {
+            ms.Write(System.Text.Encoding.UTF8.GetBytes("RIFF"), 0, 4);
+            ms.Write(BitConverter.GetBytes(3840036), 0, 4);
+            ms.Write(System.Text.Encoding.UTF8.GetBytes("WAVE"), 0, 4);
+            ms.Write(System.Text.Encoding.UTF8.GetBytes("fmt "), 0, 4);
+            ms.Write(BitConverter.GetBytes(16), 0, 4);
+            ms.Write(BitConverter.GetBytes(one), 0, 2);
+            ms.Write(BitConverter.GetBytes(channels), 0, 2);
+            ms.Write(BitConverter.GetBytes(hz), 0, 4);
+            ms.Write(BitConverter.GetBytes(hz * channels * 2), 0, 4);
+            ms.Write(BitConverter.GetBytes(blockAlign), 0, 2);
+            ms.Write(BitConverter.GetBytes(bps), 0, 2);
+            ms.Write(System.Text.Encoding.UTF8.GetBytes("data"), 0, 4);
+            ms.Write(BitConverter.GetBytes(samples * channels * 2), 0, 4);
+            ms.Write(bytesData, 0, bytesData.Length);
+            new_data = ms.ToArray();
+        }
+
+        return new_data;
     }
 }
