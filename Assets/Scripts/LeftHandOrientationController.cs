@@ -4,61 +4,63 @@ using UnityEngine;
 
 public class LeftHandOrientationController : MonoBehaviour
 {
-    public Transform leftHandTarget;
     private Rotate rotate;
-    private float speed = 1.0f;
+    private float waitTime;
 
-    private float ang = 90.0f;
+    private float ang = 80.0f;
 
-    public bool ReOrient(string initialOrientation, string finalOrientation, float speed, float waitTime)
+    public bool ReOrient(string initialOrientation, string finalOrientation, float waitTime)
     {
         rotate = GameObject.Find("LeftArmTarget").GetComponent<Rotate>();
 
-        this.speed = speed;
-        Orient(initialOrientation);
-        StartCoroutine(Wait(waitTime));
-        Orient(finalOrientation);
+        this.waitTime = waitTime / 2;
+
+        StartCoroutine(RunAndWait(initialOrientation, finalOrientation));
 
         return true;
     }
-    IEnumerator Wait(float waitTime)
+
+    private IEnumerator RunAndWait(string initialOrientation, string finalOrientation)
     {
+        Orient(initialOrientation);
+
         yield return new WaitForSeconds(waitTime);
+
+        Orient(finalOrientation);
     }
 
-
-    private bool Orient(string ori) 
+    private bool Orient(string ori)
     {
+        Debug.Log("---------ori: " + ori + " |  Time: " + Time.time);
+
         switch (ori)
         {
-            case "A": rotate_x(0.0f); rotate_y(0.0f); rotate_z(0.0f); return true;
-            case "B": rotate_x(0f); rotate_y(0f); rotate_z(0f); return true;
-            case "C": rotate_x(0f); rotate_y(0f); rotate_z(0f); return true;
-            case "D": rotate_x(0f); rotate_y(0f); rotate_z(0f); return true;
-            case "E": rotate_x(0f); rotate_y(0f); rotate_z(0f); return true;
-            case "F": rotate_x(0f); rotate_y(0f); rotate_z(0f); return true;
-            case "G": rotate_x(-ang); rotate_y(-ang); rotate_z(0f); return true;
-            case "H": rotate_x(-ang); rotate_y(0f); rotate_z(0f); return true;
-            case "I": rotate_x(-ang); rotate_y(ang); rotate_z(0f); return true;
-            case "J": rotate_x(0f); rotate_y(0f); rotate_z(0f); return true;
-            case "K": rotate_x(0f); rotate_y(0f); rotate_z(0f); return true;
-            case "L": rotate_x(0f); rotate_y(0f); rotate_z(0f); return true;
-            default: return false;
+            case "A": RotateHand(new float[] { -2 * ang, -ang, 0.0f }); return true;
+
+            case "B": RotateHand(new float[] { -2 * ang, -ang, ang }); return true;
+            case "C": RotateHand(new float[] { -2 * ang, -ang, 2 * ang }); return true;
+
+            case "D": RotateHand(new float[] { 0.0f, -ang, 0.0f }); return true;
+            case "E": RotateHand(new float[] { 0.0f, -ang, ang }); return true;
+            case "F": RotateHand(new float[] { 0.0f, -ang, 2 * ang }); return true;
+
+            case "G": RotateHand(new float[] { -ang, 0.0f, -ang }); return true;
+            case "H": RotateHand(new float[] { -ang, 0.0f, 0.0f }); return true;
+            case "I": RotateHand(new float[] { -ang, 0.0f, ang }); return true;
+
+            case "J": RotateHand(new float[] { ang, -ang, 0.0f }); return true;
+            case "K": RotateHand(new float[] { ang, -ang, ang }); return true;
+            case "L": RotateHand(new float[] { ang, -ang, 2 * ang }); return true;
+
+            default: Debug.LogError("Invalid Orientation."); return false;
         }
     }
 
-    void rotate_x(float angle)
+    void RotateHand(float[] angle)
     {
-        rotate.RotateTarget(leftHandTarget, new float[] { angle, 0, 0 }, speed);
+        //float[] curent = new float[] { transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z };
+        //float[] newAngles = new float[] { angle[0] - curent[0], angle[1] - curent[1], angle[2] - curent[2]};
+        rotate.RotateTarget(transform, angle, waitTime);
     }
 
-    void rotate_y(float angle)
-    {
-        rotate.RotateTarget(leftHandTarget, new float[] { 0, angle, 0 }, speed);
-    }
-
-    void rotate_z(float angle)
-    {
-        rotate.RotateTarget(leftHandTarget, new float[] { 0, 0, angle }, speed);
-    }
 }

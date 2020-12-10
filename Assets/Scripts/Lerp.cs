@@ -1,62 +1,42 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Lerp : MonoBehaviour
 {
+//     // lerp variables
+//     private Transform Obj;
+//     private bool isLerping = false;
+//     private Vector3 startPos;
+//     private Vector3 targetPos;
+//     private float timeElapsed = 0;
+//     private float lerpDuration;
 
-    // lerp variables
-    private Transform Obj;
-    private bool isLerping = false;
-    private Vector3 startLerpPos;
-    private Vector3 targetLerpPos;
-    private float lerpTime;
-    private float lerpSpeed;
+//     private Vector3 velocity;
 
-    public bool lerper(Transform obj, Vector3 targetPos, float speed)
-    {
-        //Debug.Log("--------------------------Lerper--------------------------------");
 
-        //Debug.Log("rightArmPosition: " + targetPos + "isLerping: " + isLerping);
+//     public bool lerper(Transform obj, Vector3 targetPos, float time)
+//     {
+//         Debug.Log("Lerper called at =>  Time: "+ Time.time);
 
-        //Debug.Log("----------------------------------------------------------------");
+//         // if (isLerping)
+//         // {
+//         //     throw new Exception("Already moving");
+//         // }
 
-        if (isLerping)
-        {
-            return false;
-        }
+//         isLerping = true;
+//         Obj = obj;
+//         startPos = obj.position;
+//         targetPos = targetPos;
+//         lerpDuration = time;
+//         velocity = Vector3.zero;
 
-        isLerping = true;
-        Obj = obj;
-        startLerpPos = obj.position;
-        targetLerpPos = targetPos;
-        lerpTime = Time.time;
-        lerpSpeed = speed;
+//         return true;
+//     }
 
-        return true;
-    }
-
-    float JourneyFraction(float totalDistance, float startTime, float speed)
-    {
-        float currentDuration = (Time.time - startTime) * speed;
-        float journeyFraction = currentDuration / totalDistance;
-
-        return journeyFraction;
-    }
-
-    private void FixedUpdate()
-    {
-        if (isLerping)
-        {
-            float totalDistance = Vector3.Distance(startLerpPos, targetLerpPos);
-            float journeyFraction = JourneyFraction(totalDistance, lerpTime, lerpSpeed);
-
-            Obj.position = Vector3.Lerp(startLerpPos, targetLerpPos, journeyFraction);
-
-            if (Mathf.Abs(journeyFraction) >= 1.0f)
-            {
-                isLerping = false;
-            }
-        }
-    }
+//     private void FixedUpdate()
+//     {
+//         Obj.position = Vector3.SmoothDamp(this.startPos, this.targetPos, ref velocity, 0.1f);
+//     }
 }
